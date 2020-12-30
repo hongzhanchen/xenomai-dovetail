@@ -13,10 +13,10 @@
 /*
  * Wrappers to create "synthetic IRQs" the I-pipe way (used to be
  * called "virtual IRQs" there). Those interrupt channels can only be
- * trigged by software, in order to run a handler on the proper
- * execution stage (in-band or out-band). We reuse the Dovetail naming
- * convention: in-band means "secondary mode", out-of-band means
- * "primary mode" in the old lingo.
+ * trigged by software, in order to run a handler on the in-band
+ * execution stage. We reuse the Dovetail naming convention: in-band
+ * means "secondary mode", out-of-band means "primary mode" in the old
+ * lingo.
  */
 
 static inline
@@ -48,32 +48,6 @@ static inline
 void pipeline_delete_inband_sirq(int sirq)
 {
 	ipipe_free_irq(ipipe_root_domain, sirq);
-	ipipe_free_virq(sirq);
-}
-
-static inline
-int pipeline_create_oob_sirq(irqreturn_t (*handler)(int irq, void *dev_id))
-{
-	int sirq = ipipe_alloc_virq(), ret;
-
-	if (sirq == 0)
-		return -EAGAIN;
-
-	ret = ipipe_request_irq(&cobalt_pipeline.domain, sirq,
-				(ipipe_irq_handler_t)handler,
-				NULL, NULL);
-	if (ret) {
-		ipipe_free_virq(sirq);
-		return ret;
-	}
-
-	return sirq;
-}
-
-static inline
-void pipeline_delete_oob_sirq(int sirq)
-{
-	ipipe_free_irq(&cobalt_pipeline.domain, sirq);
 	ipipe_free_virq(sirq);
 }
 
