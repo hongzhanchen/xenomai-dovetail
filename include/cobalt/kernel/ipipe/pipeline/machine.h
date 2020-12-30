@@ -31,8 +31,6 @@ struct cobalt_machine {
 extern struct cobalt_machine cobalt_machine;
 
 struct cobalt_machine_cpudata {
-	unsigned long apc_pending;
-	unsigned long apc_shots[BITS_PER_LONG];
 	unsigned int faults[IPIPE_NR_FAULTS];
 };
 
@@ -43,11 +41,6 @@ struct cobalt_pipeline {
 	unsigned long timer_freq;
 	unsigned long clock_freq;
 	unsigned int escalate_virq;
-	struct {
-		void (*handler)(void *cookie);
-		void *cookie;
-		const char *name;
-	} apc_table[BITS_PER_LONG];
 #ifdef CONFIG_SMP
 	cpumask_t supported_cpus;
 #endif
