@@ -187,7 +187,7 @@ int pipeline_install_tick_proxy(void)
 	nkclock.wallclock_offset =
 		ktime_to_ns(ktime_get_real()) - xnclock_read_monotonic(&nkclock);
 
-	ret = xntimer_setup_ipi();
+	ret = pipeline_request_timer_ipi(xnintr_core_clock_handler);
 	if (ret)
 		return ret;
 
@@ -244,7 +244,7 @@ fail:
 		ipipe_timer_stop(_cpu);
 	}
 
-	xntimer_release_ipi();
+	pipeline_free_timer_ipi();
 
 	return ret;
 }
@@ -270,7 +270,7 @@ void pipeline_uninstall_tick_proxy(void)
 	for_each_realtime_cpu(cpu)
 		ipipe_timer_stop(cpu);
 
-	xntimer_release_ipi();
+	pipeline_free_timer_ipi();
 
 #ifdef CONFIG_XENO_OPT_STATS_IRQS
 	xnintr_destroy(&nktimer);
