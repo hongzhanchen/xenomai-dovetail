@@ -7,6 +7,7 @@
 
 #include <linux/irq_pipeline.h>
 #include <cobalt/kernel/assert.h>
+#include <asm/xenomai/features.h>
 
 typedef unsigned long spl_t;
 
@@ -79,6 +80,11 @@ static inline void pipeline_send_timer_ipi(const struct cpumask *dest)
 static inline void pipeline_prepare_panic(void)
 {
 	/* N/A */
+}
+
+static inline void pipeline_collect_features(struct cobalt_featinfo *f)
+{
+	f->clock_freq = 0;	/* N/A */
 }
 
 #endif /* !_COBALT_KERNEL_DOVETAIL_PIPELINE_H */
