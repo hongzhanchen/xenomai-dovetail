@@ -11,6 +11,8 @@
 
 struct timespec64;
 
+extern inline void xnproxy_timer_set(unsigned long delta);
+
 static inline u64 pipeline_read_cycle_counter(void)
 {
 	/* Read the raw cycle counter of the core clock. */
@@ -26,7 +28,7 @@ static inline void pipeline_set_timer_shot(unsigned long cycles)
 	 * pipeline_set_timer_shot() should not be part of the
 	 * pipeline interface.
 	 */
-	TODO();
+	xnproxy_timer_set(cycles);
 }
 
 static inline const char *pipeline_timer_name(void)
