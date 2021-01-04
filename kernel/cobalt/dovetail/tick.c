@@ -16,6 +16,32 @@ extern struct xnintr nktimer;
 
 static DEFINE_PER_CPU(struct clock_proxy_device *, proxy_device);
 
+inline void xnproxy_timer_set(unsigned long delta)
+{
+	struct clock_proxy_device *dev = __this_cpu_read(proxy_device);
+	struct clock_event_device *real_dev = dev->real_device;
+	int ret;
+	u64 cycles;
+
+	if (delta <= 0)
+		delta = real_dev->min_delta_ns;
+	else {
+		delta = min_t(int64_t, delta,
+				(int64_t)real_dev->max_delta_ns);
+		delta = max_t(int64_t, delta,
+					(int64_t)real_dev->min_delta_ns);
+	}
+	if (delta == real_dev->min_delta_ns)
+		delta *= 2;
+	cycles = ((u64)delta * real_dev->mult) >> real_dev->shift;
+
+	ret = real_dev->set_next_event(cycles, real_dev);
+	if (ret) {
+		ret = real_dev->set_next_event(real_dev->min_delta_ticks,
+					real_dev);
+	}
+}
+
 static int proxy_set_next_ktime(ktime_t expires,
 				struct clock_event_device *proxy_dev)
 {
