@@ -31,8 +31,6 @@ inline void xnproxy_timer_set(unsigned long delta)
 		delta = max_t(int64_t, delta,
 					(int64_t)real_dev->min_delta_ns);
 	}
-	if (delta == real_dev->min_delta_ns)
-		delta *= 2;
 	cycles = ((u64)delta * real_dev->mult) >> real_dev->shift;
 
 	ret = real_dev->set_next_event(cycles, real_dev);
