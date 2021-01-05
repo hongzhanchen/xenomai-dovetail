@@ -15,7 +15,7 @@ extern inline void xnproxy_timer_set(unsigned long delta);
 static inline u64 pipeline_read_cycle_counter(void)
 {
 	/* Read the raw cycle counter of the core clock. */
-	return  ktime_get_mono_fast_ns();
+	return  ktime_get_raw_fast_ns();
 }
 
 static inline void pipeline_set_timer_shot(unsigned long cycles)
