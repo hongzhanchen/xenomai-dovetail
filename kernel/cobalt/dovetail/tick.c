@@ -16,6 +16,14 @@ extern struct xnintr nktimer;
 
 static DEFINE_PER_CPU(struct clock_proxy_device *, proxy_device);
 
+inline const char *xn_get_timer_name(void)
+{
+	struct clock_proxy_device *dev = __this_cpu_read(proxy_device);
+	struct clock_event_device *real_dev = dev->real_device;
+
+	return real_dev->name;
+}
+
 inline void xnproxy_timer_set(unsigned long delta)
 {
 	struct clock_proxy_device *dev = __this_cpu_read(proxy_device);

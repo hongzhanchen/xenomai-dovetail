@@ -12,6 +12,7 @@
 struct timespec64;
 
 extern inline void xnproxy_timer_set(unsigned long delta);
+inline const char *xn_get_timer_name(void);
 
 static inline u64 pipeline_read_cycle_counter(void)
 {
@@ -37,9 +38,7 @@ static inline const char *pipeline_timer_name(void)
 	 * Return the name of the current clock event chip, which is
 	 * the real device controlled by the proxy tick device.
 	 */
-	TODO();
-
-	return "?";
+	return xn_get_timer_name();
 }
 
 static inline const char *pipeline_clock_name(void)
